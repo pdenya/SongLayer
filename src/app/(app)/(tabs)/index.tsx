@@ -9,7 +9,7 @@ export default function Index() {
     <>
       <ExpoStack.Screen options={{ title: String(fbs('Home', 'Home header title')) }} />
       <VStack alignCenter center flex1 gap={16} padding>
-        <Text className="text-center text-xl font-bold text-accent">
+        <Text className="text-accent text-center text-xl font-bold">
           <fbt desc="Greeting">Welcome</fbt>
         </Text>
         <Text className="text-center italic">
