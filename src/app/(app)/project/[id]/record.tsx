@@ -6,6 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import CameraView, { type CameraHandle } from '../../../../capture/CameraView.tsx';
 import { defaultLayoutForSlotCount, getLayoutById } from '../../../../model/layouts.ts';
 import TakePlayer, { type TakePlayerHandle } from '../../../../playback/TakePlayer.tsx';
+import { findNextSlotIndex } from '../../../../recording/recordingHelpers.ts';
 import {
   default as useRecordSession,
   RecordSessionProvider,
@@ -36,15 +37,10 @@ function RecordingInner() {
   const playerRefs = useRef<Map<string, TakePlayerHandle | null>>(new Map());
   const [countdownText, setCountdownText] = useState<string | null>(null);
 
-  const nextSlotIndex = useMemo(() => {
-    const used = new Set(takes.map((t) => t.slotIndex));
-    for (let i = 0; i < layout.slotCount; i++) {
-      if (!used.has(i)) {
-        return i;
-      }
-    }
-    return takes.length;
-  }, [takes, layout.slotCount]);
+  const nextSlotIndex = useMemo(
+    () => findNextSlotIndex(takes, layout.slotCount),
+    [takes, layout.slotCount],
+  );
 
   const startCountdown = useCallback(async () => {
     if (!isMusicMode) {

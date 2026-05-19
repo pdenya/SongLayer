@@ -1,6 +1,7 @@
 import { forwardRef, useImperativeHandle, useRef } from 'react';
 import { Text, View } from 'react-native';
 import colors from '../ui/colors.ts';
+import { PlayerEngine } from './playerEngine.ts';
 
 // Wrapper around `expo-video`'s `VideoView` driven by a `VideoPlayer`. Each
 // take gets its own player instance — `expo-video` documents that a single
@@ -8,8 +9,7 @@ import colors from '../ui/colors.ts';
 // owns the lifecycle so the recording screen can compose N of these without
 // duplicating boilerplate.
 //
-// In environments where `expo-video` is unavailable (web / tests) we render
-// a placeholder.
+// The timing logic lives in `PlayerEngine`, which is unit-testable.
 
 export type TakePlayerHandle = Readonly<{
   currentMs(): number;
@@ -30,47 +30,35 @@ const TakePlayer = forwardRef<TakePlayerHandle, Props>(function TakePlayer(
   { fileUri, label, muted },
   ref,
 ) {
-  const lastStart = useRef<number | null>(null);
-  const accumulatedMs = useRef(0);
-  const rate = useRef(1);
+  const engineRef = useRef<PlayerEngine | null>(null);
+  if (engineRef.current == null) {
+    engineRef.current = new PlayerEngine();
+  }
+  const engine = engineRef.current;
 
   useImperativeHandle(
     ref,
     () => ({
       currentMs() {
-        if (lastStart.current == null) {
-          return accumulatedMs.current;
-        }
-        const sinceStart = (Date.now() - lastStart.current) * rate.current;
-        return accumulatedMs.current + sinceStart;
+        return engine.currentMs();
       },
       async pause() {
-        if (lastStart.current != null) {
-          accumulatedMs.current += (Date.now() - lastStart.current) * rate.current;
-          lastStart.current = null;
-        }
+        engine.pause();
       },
       async play() {
-        lastStart.current = Date.now();
+        engine.play();
       },
       async seek(ms: number) {
-        accumulatedMs.current = ms;
-        if (lastStart.current != null) {
-          lastStart.current = Date.now();
-        }
+        engine.seek(ms);
       },
       async setRate(value: number) {
-        if (lastStart.current != null) {
-          accumulatedMs.current += (Date.now() - lastStart.current) * rate.current;
-          lastStart.current = Date.now();
-        }
-        rate.current = value;
+        engine.setRate(value);
       },
-      async setVolume(_volume: number) {
-        // no-op in the placeholder
+      async setVolume(value: number) {
+        engine.setVolume(value);
       },
     }),
-    [],
+    [engine],
   );
 
   return (

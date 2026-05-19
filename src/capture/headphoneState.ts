@@ -20,6 +20,18 @@ export function setHeadphoneStateForTests(state: HeadphoneState): void {
   subscribers.forEach((s) => s(state));
 }
 
+export function __resetHeadphoneStateForTests(): void {
+  currentState = DEFAULT;
+  subscribers.clear();
+}
+
+export function subscribeHeadphoneState(fn: (s: HeadphoneState) => void): () => void {
+  subscribers.add(fn);
+  return () => {
+    subscribers.delete(fn);
+  };
+}
+
 export function getHeadphoneState(): HeadphoneState {
   return currentState;
 }

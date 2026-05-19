@@ -32,3 +32,9 @@ export function onInterruption(
 export function __emitInterruptionForTests(began: boolean): void {
   listeners.forEach((fn) => fn({ began, type: 'interruption' }));
 }
+
+// Test-only hook: resets the singleton state between tests.
+export function __resetAudioSessionForTests(): void {
+  currentMode = 'idle';
+  listeners.clear();
+}

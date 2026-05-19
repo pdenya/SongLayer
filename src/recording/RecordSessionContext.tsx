@@ -1,11 +1,17 @@
 import { createContext, useCallback, useContext, useMemo, useState } from 'react';
 import { activate as activateAudioSession } from '../capture/audioSession.ts';
 import { useHeadphoneState } from '../capture/headphoneState.ts';
-import { defaultLayoutForSlotCount, getLayoutById } from '../model/layouts.ts';
 import type { Project, Take } from '../model/types.ts';
 import { getStore } from '../storage/store.ts';
+import {
+  canRecord as deriveCanRecord,
+  nextLayoutIdAfterTake,
+  requiresHeadphones as deriveRequiresHeadphones,
+  resolveLayout,
+  type RecordingPhase,
+} from './recordingHelpers.ts';
 
-export type RecordingPhase = 'idle' | 'preflight' | 'countdown' | 'recording' | 'saving' | 'error';
+export type { RecordingPhase };
 
 type RecordSession = ReturnType<typeof useRecordSessionState>;
 
@@ -19,20 +25,15 @@ function useRecordSessionState(project: Project) {
   const [error, setError] = useState<string | null>(null);
   const headphones = useHeadphoneState();
 
-  const layout = useMemo(() => {
-    return (
-      getLayoutById(project.layoutId) ??
-      defaultLayoutForSlotCount(project.aspectRatio, takes.length + 1)
-    );
-  }, [project.layoutId, project.aspectRatio, takes.length]);
+  const layout = useMemo(() => resolveLayout(project, takes.length), [project, takes.length]);
 
   const refresh = useCallback(() => {
     setTakes(store.listTakes(project.id));
   }, [project.id, store]);
 
   const isMusicMode = project.projectType === 'music';
-  const requiresHeadphones = isMusicMode && takes.length > 0;
-  const canRecord = !requiresHeadphones || headphones.connected;
+  const requiresHeadphones = deriveRequiresHeadphones(project.projectType, takes.length);
+  const canRecord = deriveCanRecord(project.projectType, takes.length, headphones.connected);
 
   const beginRecording = useCallback(
     async (slotIndex: number) => {
@@ -65,9 +66,9 @@ function useRecordSessionState(project: Project) {
         slotMeta: { aspectAtRecord: project.aspectRatio, layoutIdAtRecord: layout.id },
       });
       const newCount = takes.length + 1;
-      if (newCount > layout.slotCount) {
-        const next = defaultLayoutForSlotCount(project.aspectRatio, newCount);
-        store.updateProjectLayout(project.id, next.id);
+      const promoted = nextLayoutIdAfterTake(layout, project.aspectRatio, newCount);
+      if (promoted) {
+        store.updateProjectLayout(project.id, promoted);
       }
       setPhase('idle');
       setActiveSlotIndex(null);

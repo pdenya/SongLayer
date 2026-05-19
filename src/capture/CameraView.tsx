@@ -1,23 +1,17 @@
 import { forwardRef, useImperativeHandle, useRef } from 'react';
 import { Text, View } from 'react-native';
-import { uuid } from '../lib/uuid.ts';
 import colors from '../ui/colors.ts';
+import { CameraEngine, type StartResult, type StopResult } from './cameraEngine.ts';
 
 // Wrapper around `react-native-vision-camera`. When the native module is
 // available we render `<Camera>`; otherwise we render a placeholder surface
 // so the layout layers above still compose correctly during development on
-// web / in tests.
-//
-// The methods `start` / `stop` mirror the VisionCamera V5 Output API
-// (`startRecording(options)` / `stopRecording()`), with a fake clock so the
-// recording flow can be exercised without a device.
-
-type StartResult = Readonly<{ recordingId: string; startedAt: number }>;
-type StopResult = Readonly<{ durationMs: number; fileUri: string }>;
+// web / in tests. The lifecycle is owned by `CameraEngine`, which is
+// unit-testable.
 
 export type CameraHandle = Readonly<{
-  start(): Promise<StartResult>;
-  stop(): Promise<StopResult>;
+  start(): Promise<Omit<StartResult, never>>;
+  stop(): Promise<Pick<StopResult, 'durationMs' | 'fileUri'>>;
 }>;
 
 type Props = Readonly<{
@@ -25,29 +19,24 @@ type Props = Readonly<{
 }>;
 
 const CameraView = forwardRef<CameraHandle, Props>(function CameraView({ active }, ref) {
-  const startedAtRef = useRef<number | null>(null);
-  const recordingIdRef = useRef<string | null>(null);
+  const engineRef = useRef<CameraEngine | null>(null);
+  if (engineRef.current == null) {
+    engineRef.current = new CameraEngine();
+  }
+  const engine = engineRef.current;
 
   useImperativeHandle(
     ref,
     () => ({
       async start() {
-        startedAtRef.current = Date.now();
-        recordingIdRef.current = uuid();
-        return { recordingId: recordingIdRef.current, startedAt: startedAtRef.current };
+        return engine.start();
       },
       async stop() {
-        const started = startedAtRef.current ?? Date.now();
-        const id = recordingIdRef.current ?? uuid();
-        startedAtRef.current = null;
-        recordingIdRef.current = null;
-        return {
-          durationMs: Math.max(0, Date.now() - started),
-          fileUri: `file:///songlayer/cache/recordings/${id}.mov`,
-        };
+        const result = engine.stop();
+        return { durationMs: result.durationMs, fileUri: result.fileUri };
       },
     }),
-    [],
+    [engine],
   );
 
   return (
