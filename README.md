@@ -1,61 +1,82 @@
-# The React Native & Expo App Template
+# SongLayer
 
-This is the most modern and always up-to-date React Native & Expo app template. It comes with sensible defaults, a great developer experience and is optimized for performance. You can read more about the DevX setup in this [frontend tooling article](https://cpojer.net/posts/fastest-frontend-tooling-in-2022). Check out the corresponding [web app template](https://github.com/nkzw-tech/vite-ts-react-tailwind-template).
+Record yourself singing, then sing along with yourself. SongLayer is a mobile app for building layered vocal videos one take at a time — each new clip records while every previous clip plays back, so you can harmonize, double, and stack parts against your own performance without ever leaving your phone.
 
-<img src="https://github.com/user-attachments/assets/91a4b790-fde8-46f9-8052-1f678b319fbf" width="49%" />
-<img src="https://github.com/user-attachments/assets/e93b1a95-cd44-4df8-9b6d-8ae797810375" width="49%" />
+The end result is a multi-pane video, sized and arranged for social, where every pane is one of your takes and the audio is all of them at once.
 
-## Technologies
+## How it works
 
-You have to make a lot of decisions and install tons of packages every time you create a new React Native app. This template offers an opinionated starting point and includes the best options for various categories. Instead of spending hours on research and piecing together a setup that works, you can just copy this template and start right away. When you copy this template, you get full control to add or remove any third-party package to customize your app.
+1. **Record take 1.** Sing into the camera. That's your foundation.
+2. **Record take 2.** Take 1 plays back while you record. Sing a harmony, a counter-melody, a bass line, a beatbox — anything that fits.
+3. **Keep going.** Take 3 plays takes 1 and 2. Take 4 plays takes 1, 2, and 3. And so on.
+4. **Arrange and export.** Pick from layouts designed for the platforms you actually post to.
 
-- Expo 54 & React Native 0.81 with the New Architecture.
-- [Expo Router](https://docs.expo.dev/router/introduction/)
-- [Uniwind](https://www.uniwind.dev) & [Tailwind](https://tailwindcss.com/)
-- [fbtee](https://github.com/nkzw-tech/fbtee) for i18n.
-- [TypeScript](https://www.typescriptlang.org)
-- [React Compiler](https://react.dev/learn/react-compiler)
-- [`@gorhom/bottom-sheet`](https://github.com/gorhom/react-native-bottom-sheet), [Legend List](https://github.com/LegendApp/legend-list), [`react-native-svg`](https://github.com/software-mansion/react-native-svg) (+ `react-native-svg-transformer`).
-- [Vite+](https://viteplus.dev/)
-- **ESM:** _It's 2025._ This template comes with `"type": "module"`.
-- _(Optional)_ [Relay](https://relay.dev/) for data fetching -> check out the [`with-relay` branch](https://github.com/nkzw-tech/expo-app-template/tree/with-relay).
+Because each new take is performed against the existing mix, timing and pitch lock in naturally — you're reacting to what's already there, the way you would in a room with other singers.
 
-Check out the [`nkzw-tech/server-template`](https://github.com/nkzw-tech/server-template) for a GraphQL based server with Pothos and Prisma, or the [`nkzw-tech/web-app-template`](https://github.com/nkzw-tech/web-app-template) for building web apps.
+## The grid evolves with your song
 
-## Getting Started
+Most collage apps make you pick a layout up front and pour clips into fixed slots. SongLayer doesn't.
 
-Start here: [Create a new app using this template](https://github.com/new?template_name=expo-app-template&template_owner=nkzw-tech).
+- One clip fills the frame.
+- Two clips split it.
+- Three, four, five clips rearrange into a layout that still reads on a phone screen.
+- Layouts are customizable — but only within the set of arrangements that export cleanly to vertical (TikTok / Reels / Shorts), square (feed), and horizontal (YouTube).
 
-After you created your repo, you can freely modify anything in this template.
+You're never locked into a rigid template you chose before you knew how many parts the song needed.
+
+## Also useful for multi-camera capture
+
+The same playback-while-recording loop works for non-musical multi-cam:
+
+- Film yourself from one angle, then film a second angle with the first as reference.
+- Build a two- or three-camera "interview" with only one camera and one person.
+- Capture a performance from multiple positions across multiple takes.
+
+Anywhere you'd want synced multi-angle footage but only have one device, the layered-take workflow gets you there.
+
+## Status
+
+Early development. The repo currently contains the Expo template scaffolding the project is being built on top of.
+
+## Tech stack
+
+Built on the [nkzw-tech Expo app template](https://github.com/nkzw-tech/expo-app-template):
+
+- Expo 55 & React Native 0.83 with the New Architecture
+- Expo Router
+- TypeScript, React 19, React Compiler
+- Uniwind + Tailwind for styling
+- fbtee for i18n
+- Vite+ for tooling
+
+## Getting started
 
 ### Prerequisites
 
-You'll need Node.js 24, [Vite+](https://viteplus.dev/) and Cocoapods.
+Node.js 24, [Vite+](https://viteplus.dev/), and Cocoapods.
 
 ```bash
 curl -fsSL https://vite.plus | bash
 brew install cocoapods
 ```
 
-For building and running apps locally, follow the [Expo setup guides](https://docs.expo.dev/get-started/set-up-your-environment/?platform=ios&device=simulated).
+For building and running on a device or simulator, follow the [Expo setup guides](https://docs.expo.dev/get-started/set-up-your-environment/?platform=ios&device=simulated).
 
-### Installing Dependencies
-
-Run:
+### Install
 
 ```bash
 vp install && vp run dev:setup
 ```
 
-### Running the iOS App in a simulator
+### Run on iOS
 
 ```bash
 vp run prebuild
 vp run ios
 ```
 
-If you already have the app installed on your simulator, you can skip the above steps and simply run `pnpm dev` to start the development server.
+If the app is already installed on your simulator, `pnpm dev` is enough to start the dev server.
 
-## Contributing
+## License
 
-Feel free to open issues, initiate discussions and send PRs to improve the template.
+See [LICENSE](./LICENSE).
