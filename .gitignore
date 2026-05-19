@@ -25,3 +25,5 @@ web-build/
 .src_manifest.json
 source_strings.json
 src/translations/
+
+.vite-hooks/

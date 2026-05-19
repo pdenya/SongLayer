@@ -1,17 +1,26 @@
 import { Link, Stack } from 'expo-router';
 import { Text, View } from 'react-native';
+import colors from '../ui/colors.ts';
 
 export default function NotFoundScreen() {
   return (
     <>
-      <Stack.Screen options={{ title: 'Oops!' }} />
-      <View className="flex-1 items-center justify-center p-5">
-        <Text className="text-lg font-bold">
+      <Stack.Screen options={{ title: 'Not found' }} />
+      <View
+        style={{
+          alignItems: 'center',
+          backgroundColor: colors.background,
+          flex: 1,
+          justifyContent: 'center',
+          padding: 20,
+        }}
+      >
+        <Text style={{ color: colors.text, fontSize: 18, fontWeight: '700' }}>
           <fbt desc="Screen not found title">This screen doesn&apos;t exist.</fbt>
         </Text>
-        <Link className="mt-4 pt-4" href="/">
-          <Text className="text-base text-[#2e78b7]">
-            <fbt desc="Go back link">Go to home screen!</fbt>
+        <Link href="/" style={{ marginTop: 16 }}>
+          <Text style={{ color: colors.accent, fontSize: 16 }}>
+            <fbt desc="Go back link">Go to home screen</fbt>
           </Text>
         </Link>
       </View>
