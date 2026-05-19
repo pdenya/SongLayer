@@ -4,6 +4,9 @@
     "slug": "songlayer",
     "version": "1.0.0",
     "scheme": "songlayer",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
     "plugins": [
       "expo-router",
       [
@@ -26,33 +29,47 @@
     },
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "dark",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#0b0b0f"
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "app.songlayer.www",
+      "bundleIdentifier": "com.songlayer.app",
+      "config": {
+        "usesNonExemptEncryption": false
+      },
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
-        "NSCameraUsageDescription": "SongLayer needs camera access to record your video takes.",
-        "NSMicrophoneUsageDescription": "SongLayer needs microphone access to record your audio takes.",
-        "NSPhotoLibraryAddUsageDescription": "SongLayer saves your finished videos to your photo library.",
+        "LSApplicationCategoryType": "public.app-category.music",
+        "NSCameraUsageDescription": "SongLayer uses the camera to record video takes that stack into your layered performance.",
+        "NSMicrophoneUsageDescription": "SongLayer uses the microphone to record audio for each take in your song.",
+        "NSPhotoLibraryAddUsageDescription": "SongLayer saves finished SongLayer videos to your photo library so you can share them.",
         "UIBackgroundModes": ["audio", "processing"],
-        "BGTaskSchedulerPermittedIdentifiers": ["app.songlayer.export"]
+        "BGTaskSchedulerPermittedIdentifiers": ["com.songlayer.app.export"]
       }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#0b0b0f"
       },
-      "package": "app.songlayer.www",
+      "package": "com.songlayer.app",
       "predictiveBackGestureEnabled": true,
-      "permissions": ["CAMERA", "RECORD_AUDIO", "WRITE_EXTERNAL_STORAGE", "READ_MEDIA_VIDEO"]
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.FOREGROUND_SERVICE_MEDIA_PROCESSING"
+      ],
+      "blockedPermissions": [
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.SYSTEM_ALERT_WINDOW"
+      ]
     },
     "extra": {
       "router": {
