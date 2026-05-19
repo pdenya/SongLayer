@@ -1,14 +1,9 @@
 {
   "expo": {
-    "name": "NKZW App",
-    "slug": "nkzw-app",
+    "name": "SongLayer",
+    "slug": "songlayer",
     "version": "1.0.0",
-    "scheme": "nkzw-app",
-    "web": {
-      "bundler": "metro",
-      "output": "static",
-      "favicon": "./assets/favicon.png"
-    },
+    "scheme": "songlayer",
     "plugins": [
       "expo-router",
       [
@@ -40,9 +35,14 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "app.nkzw.www",
+      "bundleIdentifier": "app.songlayer.www",
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSCameraUsageDescription": "SongLayer needs camera access to record your video takes.",
+        "NSMicrophoneUsageDescription": "SongLayer needs microphone access to record your audio takes.",
+        "NSPhotoLibraryAddUsageDescription": "SongLayer saves your finished videos to your photo library.",
+        "UIBackgroundModes": ["audio", "processing"],
+        "BGTaskSchedulerPermittedIdentifiers": ["app.songlayer.export"]
       }
     },
     "android": {
@@ -50,8 +50,9 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "app.nkzw.www",
-      "predictiveBackGestureEnabled": true
+      "package": "app.songlayer.www",
+      "predictiveBackGestureEnabled": true,
+      "permissions": ["CAMERA", "RECORD_AUDIO", "WRITE_EXTERNAL_STORAGE", "READ_MEDIA_VIDEO"]
     },
     "extra": {
       "router": {

@@ -1,50 +1,24 @@
 import createContextHook from '@nkzw/create-context-hook';
-import { useRouter } from 'expo-router';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { createMMKV } from 'react-native-mmkv';
+import { getOrCreateDeviceId } from '../lib/deviceId.ts';
 
-type LocalSettingKey = 'localSettingExample';
-
-type ViewerContext = Readonly<{
-  user: Readonly<{
-    id: string;
-  }>;
-}>;
+type LocalSettingKey = 'localSettingExample' | 'currentProjectId' | 'lastLayoutId';
 
 const [ViewerContext, useViewerContext] = createContextHook(() => {
-  const router = useRouter();
-
-  const [viewerContext, setViewerContext] = useState<ViewerContext | null>(null);
-
-  const user = viewerContext?.user;
+  const userId = useMemo(() => getOrCreateDeviceId(), []);
 
   const storage = useMemo(
     () =>
-      user?.id
-        ? createMMKV({
-            id: `$userData${user.id}$localSettings`,
-          })
-        : null,
-    [user?.id],
+      createMMKV({
+        id: `$userData${userId}$localSettings`,
+      }),
+    [userId],
   );
-
-  const login = useCallback(async () => {
-    // Implement your login logic here.
-    setViewerContext({
-      user: { id: '4' },
-    });
-    router.replace('/');
-  }, [router]);
-
-  const logout = useCallback(async () => {
-    // Implement your logout logic here.
-    setViewerContext(null);
-    router.replace('/');
-  }, [router]);
 
   const getLocalSetting = useCallback(
     (name: LocalSettingKey) => {
-      return storage?.getString(name) || null;
+      return storage.getString(name) || null;
     },
     [storage],
   );
@@ -52,9 +26,9 @@ const [ViewerContext, useViewerContext] = createContextHook(() => {
   const setLocalSetting = useCallback(
     (name: LocalSettingKey, value: string | null) => {
       if (value == null) {
-        storage?.remove(name);
+        storage.remove(name);
       } else {
-        storage?.set(name, value);
+        storage.set(name, value);
       }
     },
     [storage],
@@ -62,11 +36,9 @@ const [ViewerContext, useViewerContext] = createContextHook(() => {
 
   return {
     getLocalSetting,
-    isAuthenticated: !!user,
-    login,
-    logout,
+    isAuthenticated: true,
     setLocalSetting,
-    user,
+    user: { id: userId },
   };
 });
 

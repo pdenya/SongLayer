@@ -1,5 +1,5 @@
 {
-  "name": "nkzw-app",
+  "name": "songlayer",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -9,12 +9,10 @@
     "dev": "expo start",
     "dev:setup": "vp run fbtee:all",
     "fbtee:all": "vpx fbtee collect && vpx fbtee translate",
-    "format-graphql": "./scripts/format-graphql-schema.tsx",
     "ios": "expo run:ios --device 'iPhone 17 Pro'",
     "prebuild": "expo prebuild",
     "prepare": "vp config",
-    "start": "expo start --dev-client",
-    "web": "expo start --web"
+    "start": "expo start --dev-client"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.1.1",

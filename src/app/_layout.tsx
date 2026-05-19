@@ -19,7 +19,7 @@ const LocaleContext = createLocaleContext({
   clientLocales: getLocales().map(({ languageTag }) => languageTag),
   loadLocale: async (locale: string) => {
     if (locale === 'ja_JP') {
-      return ja_JP.ja_JP;
+      return ja_JP.translations;
     }
     return {};
   },

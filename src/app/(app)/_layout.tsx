@@ -1,16 +1,10 @@
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
-import { Redirect, Stack } from 'expo-router';
+import { Stack } from 'expo-router';
 import { useLocaleContext } from 'fbtee';
 import { Fragment } from 'react/jsx-runtime';
-import useViewerContext from '../../user/useViewerContext.tsx';
 
-export default function TabLayout() {
+export default function AppLayout() {
   const { locale } = useLocaleContext();
-  const { isAuthenticated } = useViewerContext();
-
-  if (!isAuthenticated) {
-    return <Redirect href="/login" />;
-  }
 
   return (
     <Fragment key={locale}>
@@ -23,6 +17,34 @@ export default function TabLayout() {
                 backgroundColor: 'transparent',
               },
               headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="project/[id]"
+            options={{
+              presentation: 'card',
+              title: '',
+            }}
+          />
+          <Stack.Screen
+            name="project/[id]/record"
+            options={{
+              presentation: 'fullScreenModal',
+              title: '',
+            }}
+          />
+          <Stack.Screen
+            name="project/[id]/preview"
+            options={{
+              presentation: 'card',
+              title: '',
+            }}
+          />
+          <Stack.Screen
+            name="project/[id]/export"
+            options={{
+              presentation: 'card',
+              title: '',
             }}
           />
         </Stack>
